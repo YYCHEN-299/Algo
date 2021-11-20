@@ -1,1 +1,55 @@
+// 标准二分查找
+// 数组中有唯一的target
+class Solution {
+    public int search(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left <= right) { // 循环条件包含等于
+        	int mid = left + (right - left) / 2;
+            if(nums[mid] == target) {
+                return mid;
+            } else if(nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
+    }
+}
 
+// 查找左边界
+// 第一个为target的值
+class Solution {
+	public int search(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left < right) { // 循环条件不包含等于
+            int mid = left + (right - left) / 2;
+            if(nums[mid] < target) { // 遇到相同的取它的左边不需要加等号，遇到相同的取它的右边加等号
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+}
+
+// 查找右边界
+// 最后一个为target的值
+class Solution {
+    public int search(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left < right) { // 循环条件不包含等于
+            int mid = left + (right - left) / 2 + 1; // 中间点需要右偏
+            if(nums[mid] > target) { // 遇到相同的取它的右边不需要加等号，遇到相同的取它的左边加等号
+                right = mid - 1;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+}

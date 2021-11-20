@@ -1,0 +1,43 @@
+// 二进制加法
+// "11" + "10" => "101"
+class Solution {
+    public String addBinary(String a, String b) {
+        StringBuffer ans = new StringBuffer();
+        int n = Math.max(a.length(), b.length()), carry = 0;
+        for(int i = 0; i < n; ++i) {
+            carry += i < a.length() ? (a.charAt(a.length() - 1 - i) - '0') : 0;
+            carry += i < b.length() ? (b.charAt(b.length() - 1 - i) - '0') : 0;
+            ans.append((char)(carry % 2 + '0'));
+            carry /= 2;
+        }
+        if(carry > 0) {
+            ans.append('1');
+        }
+        ans.reverse();
+        return ans.toString();
+    }
+}
+
+// 整数除法
+// 给定两个整数 a 和 b，求它们的除法的商 a / b
+// 不得使用乘号 '*'、除号 '/' 以及求余符号 '%'
+// -2^31 <= a, b <= 2^31 - 1
+// 向下取整
+class Solution {
+    public int divide(int a, int b) {
+        if(a == Integer.MIN_VALUE && b == -1) {
+            return Integer.MAX_VALUE;
+        }
+        int res = 0;
+        boolean flag = (a > 0) ^ (b > 0);
+        a = Math.abs(a);
+        b = Math.abs(b);
+        for(int i = 31; i >= 0; i--) {
+            if((a >>> i) - b >= 0) { // >>> 表示不带符号位右移
+                a -= (b << i);
+                res += (1 << i);
+            }
+        }
+        return flag ? -res : res;
+    }
+}

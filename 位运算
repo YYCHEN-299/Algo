@@ -41,3 +41,41 @@ class Solution {
         return flag ? -res : res;
     }
 }
+
+// 前 n 个数字二进制中 1 的个数
+// n = 5 => [0,1,1,2,1,2]
+// 0 --> 0
+// 1 --> 1
+// 2 --> 10
+// 3 --> 11
+// 4 --> 100
+// 5 --> 101
+class Solution {
+    public int[] countBits(int n) {
+        int[] output = new int[n + 1]; // 前缀和思想
+        for(int i = 1; i <= n; i++) {
+            output[i] = output[i >> 1] + (i & 1);
+        }
+        return output;
+    }
+}
+
+// 只出现一次的数字
+// 除某个元素仅出现 一次 外，其余每个元素都恰出现 三次
+class Solution {
+    public int singleNumber(int[] nums) {
+        int ans = 0;
+        for(int i = 31; i >= 0; i--) {
+            int count = 0;
+            for(int n : nums) {
+                count += (n >> i) & 1;
+            }
+            if(count % 3 != 0) { // 第 i 个二进制位就是数组中所有元素的第 i 个二进制位之和除以 3 的余数
+                ans |= 1 << i;
+            }
+        }
+        return ans;
+    }
+}
+
+// 位运算也可做状态压缩使用，int有32位，可以存放32个状态

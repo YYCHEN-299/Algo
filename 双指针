@@ -1,1 +1,52 @@
+// 1、设立 left 和 right 变量，建立滑动窗口
+// 2、right 进行自增，扩大窗口，直到窗口内的元素满足要求
+// 3、right 停止自增，此时 left 自增，缩小窗口，当窗口内的元素不满足题目要求时，回到2
+// 4、right 到达尾部时，结束循环
+
+// 和大于等于 target 的最短子数组
+// 给定一个含有 n 个正整数的数组和一个正整数 target
+// 找出该数组中满足其和 ≥ target 的长度最小的
+// 连续子数组 [numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度
+// 如果不存在符合条件的子数组，返回 0
+// target = 7, nums = [2,3,1,2,4,3] => 2 (子数组 [4,3] 是长度最小的子数组)
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int len = Integer.MAX_VALUE;
+        int l = 0, r = 0, n = nums.length;
+        int sum = 0;
+        while(r < n) {
+            sum += nums[r];
+            while(sum >= target) {
+                len = Math.min(len, r - l + 1);
+                sum -= nums[l];
+                l++;
+            }
+            r++;
+        }
+        return len == Integer.MAX_VALUE ? 0 : len;
+    }
+}
+
+// 乘积小于 K 的子数组
+// 请找出数组内乘积小于 k 的连续的子数组的个数
+// nums = [10,5,2,6], k = 100 => 8
+// (乘积小于 100 的子数组分别为: [10], [5], [2], [6], [10,5], [5,2], [2,6], [5,2,6])
+class Solution {
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        int res = 0;
+        int l = 0, r = 0, n = nums.length;
+        long count = 1;
+        while(r < n) {
+            count *= nums[r];
+            while(count >= k && r >= l) { // 左指针可能不会向右收缩到最小子数组，只需要小于 k 就会跳出循环
+                count /= nums[l];
+                l++;
+            }
+            // 左指针可能不会向右收缩到最小子数组，如 [5,2,6] 中包含 [5,2,6] [2,6] [6] 三个结果，因此加总的个数为左右之差
+            res += r - l + 1;
+            r++;
+        }
+        return res;
+    }
+}
 

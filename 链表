@@ -17,8 +17,8 @@
 //   s       f          快指针先走 n 步，快慢指针间差 n 个结点
 //           s       f  快指针走到尾部，慢指针恰好是倒数第 n - 1 个结点
 class Solution {
-	public ListNode removeNthFromEnd(ListNode head, int n) {
-		ListNode ln = new ListNode(0, head);
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+	ListNode ln = new ListNode(0, head);
         ListNode fast = head, slow = ln;
         while(n > 0) {
             fast = fast.next;
@@ -116,8 +116,8 @@ public class Solution {
         }
         ListNode A = headA, B = headB;
         while(A != B) {
-			// 遍历完 A 后进入 B，同理，遍历完 B 后进入 A
-			// 这样使得两个链表长度相等，继续移动他们就会相遇
+	    // 遍历完 A 后进入 B，同理，遍历完 B 后进入 A
+	    // 这样使得两个链表长度相等，继续移动他们就会相遇
             A = A == null ? headB : A.next;
             B = B == null ? headA : B.next;
         }
@@ -146,7 +146,7 @@ class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode pre1 = null;
         ListNode now1 = l1;
-		// 反转链表
+	// 反转链表
         while(now1 != null) {
             ListNode s = now1.next;
             now1.next = pre1;
@@ -155,7 +155,7 @@ class Solution {
         }
         ListNode pre2 = null;
         ListNode now2 = l2;
-		// 反转链表
+	// 反转链表
         while(now2 != null) {
             ListNode s = now2.next;
             now2.next = pre2;
@@ -165,7 +165,7 @@ class Solution {
         ListNode res = new ListNode();
         ListNode ln = res;
         int flag = 0;
-		// 倒着进行加总
+	// 倒着进行加总
         while(pre1 != null || pre2 != null) {
             int a = pre1 == null ? 0 : pre1.val;
             int b = pre2 == null ? 0 : pre2.val;
@@ -182,7 +182,7 @@ class Solution {
         }
         ListNode pre3 = null;
         ListNode now3 = res.next;
-		// 将结果反转回来
+	// 将结果反转回来
         while(now3 != null) {
             ListNode s = now3.next;
             now3.next = pre3;

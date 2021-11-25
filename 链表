@@ -1,1 +1,195 @@
+/**
+ * 链表的基本结构
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+ 
+// 快慢指针思想
+ 
+// 删除链表的倒数第 n 个结点
+//     1, 2, 3, 4, 5    n = 2
+//   s f                初始状态
+//   s       f          快指针先走 n 步，快慢指针间差 n 个结点
+//           s       f  快指针走到尾部，慢指针恰好是倒数第 n - 1 个结点
+class Solution {
+	public ListNode removeNthFromEnd(ListNode head, int n) {
+		ListNode ln = new ListNode(0, head);
+        ListNode fast = head, slow = ln;
+        while(n > 0) {
+            fast = fast.next;
+            n--;
+        }
+        while(fast != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return ln.next;
+    }
+}
+
+// 链表中环的入口节点
+// 给定一个链表，返回链表开始入环的第一个节点
+// 3 -> 2 -> 0 -> -4
+//      ↑----------|
+// 返回索引为 1 的链表节点
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        if(head == null) {
+            return null;
+        }
+        ListNode fast = head, slow = head;
+        while(fast != null) {
+            slow = slow.next;
+            if(fast.next != null) {
+                fast = fast.next.next;
+            } else {
+                return null;
+            }
+            if(fast == slow) {
+                ListNode ln = head;
+                while(ln != slow) {
+                    ln = ln.next;
+                    slow = slow.next;
+                }
+                return ln;
+            }
+        }
+        return null;
+    }
+}
+
+// 重排链表
+// L0 → L1 → … → Ln-1 → Ln
+// 请将其重新排列后变为:
+// L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → …
+// [1,2,3,4,5] => [1,5,2,4,3]
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head == null) return;
+        ListNode fast = head, slow = head;
+        // 使用快慢指针将链表分割成前后两半
+		while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode pre = null, now = slow.next;
+        slow.next = null; // 将前半段和后半段链表分割开
+        // 将后一半链表反转
+		while(now != null) {
+            ListNode s = now.next;
+            now.next = pre;
+            pre = now;
+            now = s;
+        }
+        ListNode l1 = head;
+        ListNode l2 = pre;
+		// 拼接两段链表
+        while(l1 != null && l2 != null) {
+            ListNode s1 = l1.next;
+            ListNode s2 = l2.next;
+            l1.next = l2;
+            l1 = s1;
+            l2.next = l1;
+            l2 = s2;
+        }
+    }
+}
+
+// ======================
+
+// 两个链表的第一个重合节点
+// 给定两个单链表的头节点，找出两个单链表相交的起始节点
+//        a1 -> a2 -> c1 -> c2 -> c3
+//  b1 -> b2 -> b3 -- ↑
+// 遍历完 A 后进入 B: (a1 -> a2 -> c1 -> c2 -> c3) -> (b1 -> b2 -> b3 -> [c1] -> c2 -> c3)
+// 遍历完 B 后进入 A: (b1 -> b2 -> b3 -> c1 -> c2 -> c3) -> (a1 -> a2 -> [c1] -> c2 -> c3)
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if(headA == null || headB == null) {
+            return null;
+        }
+        ListNode A = headA, B = headB;
+        while(A != B) {
+			// 遍历完 A 后进入 B，同理，遍历完 B 后进入 A
+			// 这样使得两个链表长度相等，继续移动他们就会相遇
+            A = A == null ? headB : A.next;
+            B = B == null ? headA : B.next;
+        }
+        return A;
+    }
+}
+
+// 反转链表
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode now = head;
+        while(now != null) {
+            ListNode s = now.next;
+            now.next = pre;
+            pre = now;
+            now = s;
+        }
+        return pre;
+    }
+}
+
+// 链表中的两数相加
+// l1 = [7,2,4,3], l2 = [5,6,4] => [7,8,0,7]
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode pre1 = null;
+        ListNode now1 = l1;
+		// 反转链表
+        while(now1 != null) {
+            ListNode s = now1.next;
+            now1.next = pre1;
+            pre1 = now1;
+            now1 = s;
+        }
+        ListNode pre2 = null;
+        ListNode now2 = l2;
+		// 反转链表
+        while(now2 != null) {
+            ListNode s = now2.next;
+            now2.next = pre2;
+            pre2 = now2;
+            now2 = s;
+        }
+        ListNode res = new ListNode();
+        ListNode ln = res;
+        int flag = 0;
+		// 倒着进行加总
+        while(pre1 != null || pre2 != null) {
+            int a = pre1 == null ? 0 : pre1.val;
+            int b = pre2 == null ? 0 : pre2.val;
+            int sum = a + b + flag;
+            flag = sum / 10;
+            sum = sum % 10;
+            ln.next = new ListNode(sum);
+            ln = ln.next;
+            pre1 = pre1 == null ? null : pre1.next;
+            pre2 = pre2 == null ? null : pre2.next;
+        }
+        if(flag == 1) {
+            ln.next = new ListNode(1);
+        }
+        ListNode pre3 = null;
+        ListNode now3 = res.next;
+		// 将结果反转回来
+        while(now3 != null) {
+            ListNode s = now3.next;
+            now3.next = pre3;
+            pre3 = now3;
+            now3 = s;
+        }
+        return pre3;
+    }
+}
 

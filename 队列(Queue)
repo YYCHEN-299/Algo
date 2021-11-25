@@ -1,0 +1,46 @@
+// 队列是一种特殊的线性表，是一种先进先出(FIFO)的数据结构
+// 只允许在前端进行删除，在后端进行插入
+
+// 滑动窗口的平均值
+// 给定一个整数数据流和一个窗口大小，根据该滑动窗口的大小，计算滑动窗口里所有数字的平均值
+// MovingAverage(int size) 用窗口大小 size 初始化对象
+// double next(int val) 成员函数 next 每次调用时会往滑动窗口增加一个整数，返回滑动窗口里数字的平均值
+class MovingAverage {
+    Queue<Integer> q = new LinkedList<>();
+    int size, idx = 0;
+    double sum = 0.0;
+    public MovingAverage(int size) {
+        this.size = size;
+    }
+    public double next(int val) {
+        idx++;
+        if(idx > size) {
+            idx--;
+            sum -= q.poll();
+        }
+        sum += val;
+        q.add(val);
+        double res = sum / idx;
+        return res;
+    }
+}
+
+// 最近请求次数
+// RecentCounter() 初始化计数器，请求数为 0
+// int ping(int t) 在时间 t 添加一个新请求，返回在 [t-3000, t] 内发生的请求数
+class RecentCounter {
+    int requests;
+    Queue<Integer> q = new LinkedList<>();
+    public RecentCounter() {
+        requests = 0;
+    }
+    public int ping(int t) {
+        while(q.peek() != null && q.peek() < t - 3000) {
+            q.poll();
+            requests -= 1;
+        }
+        q.add(t);
+        requests += 1;
+        return requests;
+    }
+}

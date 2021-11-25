@@ -1,5 +1,5 @@
 /**
- * 链表的基本结构
+ * 单向链表的基本结构
  * public class ListNode {
  *     int val;
  *     ListNode next;
@@ -8,7 +8,7 @@
  *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
  * }
  */
- 
+
 // 快慢指针思想
  
 // 删除链表的倒数第 n 个结点
@@ -18,7 +18,7 @@
 //           s       f  快指针走到尾部，慢指针恰好是倒数第 n - 1 个结点
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
-	ListNode ln = new ListNode(0, head);
+		ListNode ln = new ListNode(0, head);
         ListNode fast = head, slow = ln;
         while(n > 0) {
             fast = fast.next;
@@ -74,14 +74,14 @@ class Solution {
         if(head == null) return;
         ListNode fast = head, slow = head;
         // 使用快慢指针将链表分割成前后两半
-	while(fast != null && fast.next != null) {
+		while(fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
         ListNode pre = null, now = slow.next;
         slow.next = null; // 将前半段和后半段链表分割开
         // 将后一半链表反转
-	while(now != null) {
+		while(now != null) {
             ListNode s = now.next;
             now.next = pre;
             pre = now;
@@ -89,7 +89,7 @@ class Solution {
         }
         ListNode l1 = head;
         ListNode l2 = pre;
-	// 拼接两段链表
+		// 拼接两段链表
         while(l1 != null && l2 != null) {
             ListNode s1 = l1.next;
             ListNode s2 = l2.next;
@@ -100,8 +100,6 @@ class Solution {
         }
     }
 }
-
-// ======================
 
 // 两个链表的第一个重合节点
 // 给定两个单链表的头节点，找出两个单链表相交的起始节点
@@ -116,14 +114,49 @@ public class Solution {
         }
         ListNode A = headA, B = headB;
         while(A != B) {
-	    // 遍历完 A 后进入 B，同理，遍历完 B 后进入 A
-	    // 这样使得两个链表长度相等，继续移动他们就会相遇
+	    	// 遍历完 A 后进入 B，同理，遍历完 B 后进入 A
+	    	// 这样使得两个链表长度相等，继续移动他们就会相遇
             A = A == null ? headB : A.next;
             B = B == null ? headA : B.next;
         }
         return A;
     }
 }
+
+// 排序的循环链表
+// 给定循环单调非递减列表中的一个点，向这个列表中插入一个新元素，使这个列表仍然是循环升序的
+// 给定的可以是这个列表中任意一个顶点的指针，并不一定是这个列表中最小元素的指针
+// 如果列表为空，需要创建一个循环有序列表并返回这个节点。否则。请返回原先给定的节点
+// head = [3,4,1], insertVal = 2 => [3,4,1,2]
+class Solution {
+    public Node insert(Node head, int insertVal) {
+        Node n = head;
+        if(n == null) { // 如果是空的，则创建一个循环有序列表
+            Node res = new Node(insertVal);
+            res.next = res;
+            return res;
+        }
+        while(n.next != head) { // 遍历
+			// 当前结点的值大于下一个结点的值，就是升序的结尾，即当前是最大值，下一个是最小值
+            if(n.val > n.next.val) {
+                if(n.next.val >= insertVal) break; // 如果新增的值小于最小值
+                else if(n.val <= insertVal) break; // 或大于最大值
+            }
+			// 如果新增值能正好放入两个结点之间
+            if(n.val <= insertVal && insertVal <= n.next.val) {
+                break;
+            }
+            n = n.next;
+        }
+		// 在符合要求的结点跳出循环，并加入新值，新值的下一个结点为原下一个结点
+        n.next = new Node(insertVal, n.next);
+        return head;
+    }
+}
+
+// =======
+
+// 反转思想
 
 // 反转链表
 class Solution {
@@ -146,7 +179,7 @@ class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode pre1 = null;
         ListNode now1 = l1;
-	// 反转链表
+		// 反转链表
         while(now1 != null) {
             ListNode s = now1.next;
             now1.next = pre1;
@@ -155,7 +188,7 @@ class Solution {
         }
         ListNode pre2 = null;
         ListNode now2 = l2;
-	// 反转链表
+		// 反转链表
         while(now2 != null) {
             ListNode s = now2.next;
             now2.next = pre2;
@@ -165,7 +198,7 @@ class Solution {
         ListNode res = new ListNode();
         ListNode ln = res;
         int flag = 0;
-	// 倒着进行加总
+		// 倒着进行加总
         while(pre1 != null || pre2 != null) {
             int a = pre1 == null ? 0 : pre1.val;
             int b = pre2 == null ? 0 : pre2.val;
@@ -182,7 +215,7 @@ class Solution {
         }
         ListNode pre3 = null;
         ListNode now3 = res.next;
-	// 将结果反转回来
+		// 将结果反转回来
         while(now3 != null) {
             ListNode s = now3.next;
             now3.next = pre3;
@@ -193,3 +226,43 @@ class Solution {
     }
 }
 
+// ==========
+
+// 链表 + DFS
+
+// 展平多级双向链表
+// [1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12] => [1,2,3,7,8,11,12,9,10,4,5,6]
+// 1 <-> 2 <-> 3 <-> 4 <-> 5 <-> 6
+//             ↓
+//             7 <-> 8 <-> 9 <-> 10
+//                   ↓
+//                   11 <-> 12
+class Solution {
+    public Node flatten(Node head) {
+        dfs(head);
+        return head;
+    }
+    public Node dfs(Node n) {
+        Node now = n;
+        Node last = null;
+        while(now != null) {
+            Node nxt = now.next;
+            if(now.child != null) { // 如果当前节点有孩子
+                // 将当前节点和孩子的头连接
+				now.next = now.child;
+                now.child.prev = now;
+				Node ch = dfs(now.child); // 对孩子进行深度优先搜索
+                if(nxt != null) { // 如果当前节点的下一个不为空则把它和孩子的尾连接
+                    nxt.prev = ch;
+                    ch.next = nxt;
+                }
+                now.child = null; // 切断当前节点和孩子的关联
+                last = ch; // 当前最后一个结点为孩子的尾
+            } else {
+                last = now; // 当前最后一个结点为没有孩子的结点
+            }
+            now = nxt;
+        }
+        return last;
+    }
+}

@@ -74,14 +74,14 @@ class Solution {
         if(head == null) return;
         ListNode fast = head, slow = head;
         // 使用快慢指针将链表分割成前后两半
-		while(fast != null && fast.next != null) {
+	while(fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
         ListNode pre = null, now = slow.next;
         slow.next = null; // 将前半段和后半段链表分割开
         // 将后一半链表反转
-		while(now != null) {
+	while(now != null) {
             ListNode s = now.next;
             now.next = pre;
             pre = now;
@@ -89,7 +89,7 @@ class Solution {
         }
         ListNode l1 = head;
         ListNode l2 = pre;
-		// 拼接两段链表
+	// 拼接两段链表
         while(l1 != null && l2 != null) {
             ListNode s1 = l1.next;
             ListNode s2 = l2.next;

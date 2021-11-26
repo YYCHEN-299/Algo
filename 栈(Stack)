@@ -103,7 +103,21 @@ class Solution {
 // 每个柱子彼此相邻，且宽度为 1
 // 求在该柱状图中，能够勾勒出来的矩形的最大面积
 // heights = [2,1,5,6,2,3] => 10
-
+//                    __6__
+//              __5__|     |
+//             |     |     |
+//             |     |     |      __3__
+//  __2__      |     |     |__2__|     |
+// |     |__1__|     |     |     |     |
+// |     |     |     |     |     |     |
+// 最大矩形为阴影部分:
+//                    __6__
+//              __5__|     |
+//             |■■■■■|■■■■■|
+//             |■■■■■|■■■■■|      __3__
+//  __2__      |■■■■■|■■■■■|__2__|     |
+// |     |__1__|■■■■■|■■■■■|     |     |
+// |     |     |■■■■■|■■■■■|     |     |
 class Solution {
     public int largestRectangleArea(int[] heights) {
         if(heights.length == 1) {
@@ -112,17 +126,21 @@ class Solution {
         int[] l = new int[heights.length];
         int[] r = new int[heights.length];
         Stack<Integer> st = new Stack<>();
-        st.push(-1);
+        st.push(-1); // 虚拟一个最左侧的 index = -1
+        // 寻找左侧第一个比当前柱子低的柱子坐标
         for(int i = 0; i < heights.length; i++) {
+            // 如果栈顶的柱子比当前柱子高，直接 pop
             while(st.peek() != -1 && heights[st.peek()] >= heights[i]) {
                 st.pop();
             }
             l[i] = st.peek();
             st.push(i);
         }
-        st.clear();
-        st.push(heights.length);
+        st.clear(); // 清空栈
+        st.push(heights.length); // 虚拟一个最右侧的 index = 数组长度
+        // 寻找右侧第一个比当前柱子低的柱子坐标
         for(int i = heights.length - 1; i >= 0; i--) {
+            // 如果栈顶的柱子比当前柱子高，直接 pop
             while(st.peek() != heights.length && heights[st.peek()] >= heights[i]) {
                 st.pop();
             }
@@ -131,6 +149,7 @@ class Solution {
         }
         int s = 0;
         for(int i = 0; i < heights.length; i++) {
+            // 每一个柱子能获得的最大面积 = 柱子的高 * 左右侧第一个比他低的柱子之间的距离
             s = Math.max(s, heights[i] * (r[i] - l[i] - 1));
         }
         return s;
@@ -140,7 +159,10 @@ class Solution {
 // 矩阵中最大的矩形
 // 给定一个由 0 和 1 组成的矩阵 matrix ，找出只包含 1 的最大矩形，并返回其面积
 // matrix = ["10100","10111","11111","10010"] => 6
-
+// 1  0   1   0   0
+// 1  0  [1] [1] [1]
+// 1  1  [1] [1] [1]
+// 1  0   0   1   0
 class Solution {
     public int maximalRectangle(String[] matrix) {
         if(matrix.length == 0 || matrix[0].length() == 0) return 0;
@@ -148,12 +170,14 @@ class Solution {
         int s = 0;
         for(int i = 0; i < matrix.length; i++) {
             for(int j = 0; j < matrix[i].length(); j++) {
+                // 读每一行，如果是 1 则加总到当前行该列一共有几个 1，如果是 0 则将该列改为 0
                 if(matrix[i].charAt(j) == '0') {
                     col[j] = 0;
                 } else {
                     col[j]++;
                 }
             }
+            // 每叠加完一行，就进行面积运算，取最大值
             s = Math.max(s, comp(col));
         }
         return s;

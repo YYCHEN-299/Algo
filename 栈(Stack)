@@ -210,3 +210,59 @@ class Solution {
         return s;
     }
 }
+
+// 字符串解码
+// 给定一个经过编码的字符串，返回它解码后的字符串
+// 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数
+// 可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的
+// s = "3[a2[c]]" => "accaccacc"
+class Solution {
+    int ptr;
+    public String decodeString(String s) {
+        Stack<String> st = new Stack<>();
+        ptr = 0;
+        while(ptr < s.length()) {
+            char cur = s.charAt(ptr);
+            if(Character.isDigit(cur)) {
+                // 获取一个数字进栈，将多位数字更改为一个 String
+                String digits = getDigits(s);
+                st.push(digits);
+            } else if(Character.isLetter(cur) || cur == '[') {
+                // 获取一个字母或者左括号进栈
+                st.push(String.valueOf(s.charAt(ptr))); 
+                ptr += 1;
+            } else if(cur == ']') {
+                StringBuilder sb = new StringBuilder();
+                while (!"[".equals(st.peek())) {
+                    sb.append(st.pop());
+                }
+                st.pop(); // 左括号出栈
+                // 此时 st 栈顶为当前 sub 对应的字符串应该出现的次数
+                int t = Integer.parseInt(st.pop());
+                StringBuilder output = new StringBuilder();
+                while(t > 0) {
+                    output.append(sb);
+                    t -= 1;
+                }
+                // 将构造好的字符串入栈
+                // 存入的字符串是反着的，但最后会将整个字符串翻转，因此没有影响
+                st.push(output.toString());
+                ptr += 1;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!st.isEmpty()) {
+            sb.append(st.pop());
+        }
+        sb.reverse();
+        return sb.toString();
+    }
+    public String getDigits(String s) { // 避免多位数字的情况
+        StringBuilder sb = new StringBuilder();
+        while(Character.isDigit(s.charAt(ptr))) {
+            sb.append(s.charAt(ptr));
+            ptr += 1;
+        }
+        return sb.toString();
+    }
+}

@@ -336,3 +336,92 @@ class LRUCache {
         tail.prev = n;
     }
 }
+
+// -------
+
+// 链表排序
+// 给定链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表
+// head = [4,2,1,3] => [1,2,3,4]
+class Solution {
+    public ListNode sortList(ListNode head) {
+        if(head == null || head.next == null) return head;
+        // 将链表分割成前后两段
+		ListNode secondHead = Split(head);
+        // 对两段链表分别进行排序
+		head = sortList(head);
+        secondHead = sortList(secondHead);
+        // 链表合并时进行排序
+		return Merge(head, secondHead);
+    }
+    public ListNode Merge(ListNode head1, ListNode head2) {
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        while(head1 != null && head2 != null) {
+            if(head1.val <= head2.val) {
+                cur.next = head1;
+                head1 = head1.next;
+            } else {
+                cur.next = head2;
+                head2 = head2.next;
+            }
+            cur = cur.next;
+        }
+        if(head1 != null) {
+			cur.next = head1;
+		} else {
+			cur.next = head2;
+		}
+        return dummy.next;
+    }
+    public ListNode Split(ListNode head) {
+        ListNode slow = head, fast = head.next;
+		// 利用快慢指针找到当前链表的中点，并将链表从中间分割，返回中间点
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode newHead = slow.next;
+        slow.next = null;
+        return newHead;
+    }
+}
+
+// 合并排序链表
+// 给定一个链表数组，每个链表都已经按升序排列
+// 请将所有链表合并到一个升序链表中，返回合并后的链表
+// lists = [[1,4,5],[1,3,4],[2,6]] => [1,1,2,3,4,4,5,6]
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        return merge(lists, 0, lists.length - 1);
+    }
+    public ListNode merge(ListNode[] lists, int l, int r) {
+        if(l == r) {
+            return lists[l];
+        }
+        if(l > r) {
+            return null;
+        }
+        int mid = (r - l) / 2 + l;
+        // 二分法
+		return mergeTwoList(merge(lists, l, mid), merge(lists, mid + 1, r));
+    } 
+    public ListNode mergeTwoList(ListNode l1, ListNode l2) {
+        if(l1 == null || l2 == null) {
+            return l1 == null ? l2 : l1;
+        }
+        ListNode head = new ListNode(-1);
+        ListNode node = head;
+        while(l1 != null && l2 != null) {
+            if(l1.val < l2.val) {
+                node.next = l1;
+                l1 = l1.next;
+            } else {
+                node.next = l2;
+                l2 = l2.next;
+            }
+            node = node.next;
+        }
+        node.next = l1 == null ? l2 : l1;
+        return head.next;
+    }
+}

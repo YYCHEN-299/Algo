@@ -403,17 +403,43 @@ class Solution {
 public class Solution {
     public int coinChange(int[] coins, int amount) {
         int max = amount + 1;
-        int[] dp = new int[amount + 1]; // dp 存放组成金额 i 所需要的最少硬币数量
-        Arrays.fill(dp, max); // 硬币最面值为 1，因此最大硬币数量 = 金额
+        int[] dp = new int[max]; // dp 存放组成金额 i 所需要的最少硬币数量
+        Arrays.fill(dp, max); // 硬币最面值为 1，因此先假设最大硬币数量 = 金额 + 1
         dp[0] = 0; // 边界条件，当金额为 0 时不需要任何硬币
-        for (int i = 1; i <= amount; i++) {
-            for (int j = 0; j < coins.length; j++) {
-                if (coins[j] <= i) {
+        for(int i = 1; i <= amount; i++) { // 遍历每一个金额
+            for(int j = 0; j < coins.length; j++) {
+                if(coins[j] <= i) { // 取的硬币要小于当前需要的金额
+                    // 计算取了当前硬币后剩余的金额所需要的硬币
                     dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
                 }
             }
         }
+        // 最后检查组成金额 amount 所需的最少硬币数量是否被修改
+        // 如果没有被修改则 = amount + 1 > amount，说明没有一种组合能组成规定金额
         return dp[amount] > amount ? -1 : dp[amount];
     }
 }
 
+// 排列的数目
+// 给定一个由 不同 正整数组成的数组 nums ，和一个目标整数 target
+// 请从 nums 中找出并返回总和为 target 的元素组合的个数
+// 数组中的数字可以在一次排列中出现任意次，但是顺序不同的序列被视作不同的组合。
+// nums = [1,2,3], target = 4 => 7
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int max = target + 1;
+        int[] dp = new int[max]; // dp 存放组成 i 的方案数量
+        dp[0] = 1; // 边界，当目标值为 0 时，什么都不取，只有一种方案
+        for(int i = 1; i < max; i++) {
+            for(int j = 0; j < nums.length; j++) {
+                if(i >= nums[j]) {
+                    // 如果当前可取的数字小于当前目标值
+                    // 则计算取当前数字后有几种方案能组成剩下的值
+                    // 加总每一种情况即为组成当前目标值的方案数
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
+        }
+        return dp[target];
+    }
+}

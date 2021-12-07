@@ -59,7 +59,7 @@ class NumMatrix {
             for(int j = 0; j < n; j++) {
                 mtx[i + 1][j + 1] = mtx[i][j + 1] + mtx[i + 1][j] - mtx[i][j] + matrix[i][j];
                 // (0, 0) 到 (i, j) 的和 = (0, 0)(i - 1, j) + (0, 0)(i, j - 1) - 
-                                           (0, 0)(i - 1, j - 1) (去掉前面两块区域重叠的地方，重复加) + (i, j) 的值
+                //                         (0, 0)(i - 1, j - 1) (去掉前面两块区域重叠的地方，重复加) + (i, j) 的值
             }
         }
     }
@@ -67,7 +67,7 @@ class NumMatrix {
         return mtx[row2 + 1][col2 + 1] - mtx[row1][col2 + 1] - 
                             mtx[row2 + 1][col1] + mtx[row1][col1];
         // (row1, col1)(row2, col2) = (0, 0)(row2, col2) - (0, 0)(row1 - 1, col2) - 
-                                      (0, 0)(row2, col1 - 1) - (0, 0)(row1 - 1, col1 - 1) (补回前面两块区域重叠的地方，重复减)
+        //                             (0, 0)(row2, col1 - 1) - (0, 0)(row1 - 1, col1 - 1) (补回前面两块区域重叠的地方，重复减)
     }
 }
 

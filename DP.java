@@ -141,7 +141,7 @@ class Solution {
         for(int i = 0; i < n; i++) {
             hm.put(arr[i], i); // 放入每个数字的 index
         }
-        int[][] dp = new int[n][n]; // a 到 b 中斐波那契的长度
+        int[][] dp = new int[n][n]; // a 到 b 中斐波那契的长度，a > b
         int res = 0;
         for(int i = 2; i < n; i++) {
             for(int j = i - 1; j >= 0; j--) {

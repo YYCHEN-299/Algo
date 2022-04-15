@@ -267,3 +267,25 @@ class Solution {
         return true;
     }
 }
+
+// 字典序排数
+// 给你一个整数 n ，按字典序返回范围 [1, n] 内所有整数
+// n = 13 => [1,10,11,12,13,2,3,4,5,6,7,8,9]
+class Solution {
+    public List<Integer> lexicalOrder(int n) {
+        List<Integer> res = new ArrayList<>();
+        for(int i = 1; i < 10; i++) {
+            dfs(res, n, i);
+        }
+        return res;
+    }
+    public void dfs(List<Integer> res, int n, int val) {
+        if(n < val) {
+            return;
+        }
+        res.add(val);
+        for(int i = 0; i < 10; i++) {
+            dfs(res, n, val * 10 + i);
+        }
+    }
+}
